@@ -35,10 +35,60 @@ def get_dependencies(package_name: str) -> List[str]:
     return dependencies
 
 
+def build_dependency_graph(package_name: str, max_depth: int = 5) -> List[str]:
+    """Recursively build the dependency graph for the package using PlantUML format."""
+    graph = []
+    visited = set()
+
+    def add_dependencies(pkg_name: str, current_depth: int):
+        if current_depth > max_depth or pkg_name in visited:
+            return
+        visited.add(pkg_name)
+
+        dependencies = get_dependencies(pkg_name)
+        for dep in dependencies:
+            graph.append(f"{pkg_name} --> {dep}")
+            add_dependencies(dep, current_depth + 1)
+
+    add_dependencies(package_name, 1)
+    return graph
+
+
+def generate_plantuml_script(graph: List[str]) -> str:
+    """Generate a PlantUML script based on the dependency graph."""
+    plantuml_script = "@startuml\n"
+    for relation in graph:
+        plantuml_script += f"{relation}\n"
+    plantuml_script += "@enduml"
+    return plantuml_script
+
+
+def save_plantuml_script(script: str, output_path: str) -> None:
+    """Save the PlantUML script to a file."""
+    with open(output_path, "w") as f:
+        f.write(script)
+
+
+def visualize_graph(visualizer_path: str, script_path: str) -> None:
+    """Visualize the graph using the specified PlantUML graph visualizer program."""
+    try:
+        subprocess.run(
+            ["java", "-jar", visualizer_path, script_path], check=True)
+    except subprocess.CalledProcessError as ex:
+        print(f"Error running PlantUML: {ex}")
+
+
 def main():
     config_path = "config.toml"
     config = parse_toml_config(config_path)
-    dependencies = get_dependencies(config["package_name"])
+
+    package_name = config["package_name"]
+    visualizer_path = config["visualizer_path"]
+
+    graph = build_dependency_graph(package_name)
+    script = generate_plantuml_script(graph)
+    save_plantuml_script(script, "dependency_graph.puml")
+    visualize_graph(visualizer_path, "dependency_graph.puml")
 
 
 if __name__ == "__main__":
