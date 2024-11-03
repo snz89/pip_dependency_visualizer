@@ -1,6 +1,9 @@
 # Config
 src/config.toml
 
+# Plantum
+plantuml-1.2024.7.jar
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
