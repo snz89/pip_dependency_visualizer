@@ -1,6 +1,6 @@
 # Example files
-src/config.toml
-src/dependency_graph.puml
+dependency_graph.puml
+dependency_graph.png
 
 # Plantum
 plantuml-1.2024.7.jar

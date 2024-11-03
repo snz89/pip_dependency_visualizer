@@ -1,0 +1,4 @@
+[config]
+visualizer_path = ".\\plantuml-1.2024.7.jar"
+package_name = "requests"
+repository_url = "https://github.com/psf/requests"
