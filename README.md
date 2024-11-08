@@ -42,7 +42,7 @@ Replace `"your-package-name"` with the name of the pip package you want to analy
 Run the script:
 
 ```bash
-python .\src\dependency_visualizer.py  # Replace your_script_name.py with the actual script filename (e.g. visualize_dependencies.py)
+python .\src\dependency_visualizer.py
 ```
 
 This will generate a `dependency_graph.puml` file and then attempt to visualize it using the specified PlantUML jar. The resulting image will be saved in the same directory as the `.puml` file.  The default output image format is typically PNG.
