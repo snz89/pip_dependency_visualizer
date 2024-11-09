@@ -5,7 +5,6 @@ from typing import Dict, List
 
 def parse_toml_config(config_path: str) -> Dict[str, str]:
     """Parses a TOML configuration file."""
-    config = {}
     try:
         with open(config_path, "rb") as f:
             config = tomllib.load(f)["config"]
@@ -14,16 +13,16 @@ def parse_toml_config(config_path: str) -> Dict[str, str]:
         print(f"Config file not found: {ex}")
     except tomllib.TOMLDecodeError as ex:
         print(f"Error decoding TOML file: {ex}")
+    return {}
 
 
 def get_dependencies(package_name: str) -> List[str]:
     """Returns a list of dependencies for a given pip package."""
-    try:
-        result = subprocess.run(
-            ["pip", "show", package_name], capture_output=True, text=True)
-    except subprocess.CalledProcessError:
-        print(f"Error: Could not fetch dependencies for {package_name}")
-        return []
+    result = subprocess.run(
+        ["pip", "show", package_name], capture_output=True, text=True)
+
+    if result.returncode != 0:
+        raise ValueError(f"Error: Package '{package_name}' not found.")
 
     dependencies = []
     for line in result.stdout.splitlines():
@@ -31,7 +30,6 @@ def get_dependencies(package_name: str) -> List[str]:
             dependencies = line.split(": ")[1].split(", ")
 
     dependencies = [dep.strip() for dep in dependencies if dep]
-
     return dependencies
 
 
@@ -46,6 +44,7 @@ def build_dependency_graph(package_name: str, max_depth: int = 5) -> List[str]:
         visited.add(pkg_name)
 
         dependencies = get_dependencies(pkg_name)
+
         for dep in dependencies:
             graph.append(f"{pkg_name} --> {dep}")
             add_dependencies(dep, current_depth + 1)
@@ -73,7 +72,8 @@ def visualize_graph(visualizer_path: str, script_path: str) -> None:
     """Visualize the graph using the specified PlantUML graph visualizer program."""
     try:
         subprocess.run(
-            ["java", "-jar", visualizer_path, script_path], check=True)
+            ["java", "-jar", visualizer_path, script_path], check=True
+        )
     except subprocess.CalledProcessError as ex:
         print(f"Error running PlantUML: {ex}")
 
@@ -82,10 +82,23 @@ def main():
     config_path = "config.toml"
     config = parse_toml_config(config_path)
 
+    if not config:
+        print("Failed to load configuration.")
+        return
+
     package_name = config["package_name"]
     visualizer_path = config["visualizer_path"]
 
-    graph = build_dependency_graph(package_name)
+    if not package_name or not visualizer_path:
+        print("Configuration file is missing required fields.")
+        return
+
+    try:
+        graph = build_dependency_graph(package_name)
+    except ValueError as ex:
+        print(ex)
+        return
+
     script = generate_plantuml_script(graph)
     save_plantuml_script(script, "dependency_graph.puml")
     visualize_graph(visualizer_path, "dependency_graph.puml")
