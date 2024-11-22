@@ -8,21 +8,29 @@ Visualizing Python package dependencies, including transitive dependencies, usin
 * Generates a PlantUML script representing the dependency graph.
 * Supports visualization using a user-specified PlantUML jar file.
 * Configuration via a TOML file.
+* Supports Python 3.7+
 
 ## Prerequisites
 
-* Python 3.11 or later (for `tomllib`)
-* `pip` installed and accessible in your PATH.
-* PlantUML jar file (e.g., `plantuml.jar`). You can download it from the [PlantUML website](https://plantuml.com/download).
-* Java installed and accessible in your PATH (required to run the PlantUML jar).
-
+*   Python 3.7 or later
+*   `pip` installed and accessible in your PATH.
+*   PlantUML jar file (e.g., `plantuml.jar`). You can download it from the [PlantUML website](https://plantuml.com/download).
+*   Java installed and accessible in your PATH (required to run the PlantUML jar).
 
 ## Installation
 
 1. Clone this repository:
-   ```bash
-   git clone https://github.com/snz89/pip_dependency_visualizer.git
-   ```
+    ```bash
+    git clone https://github.com/snz89/pip_dependency_visualizer.git
+    ```
+2. Navigate to the project directory:
+    ```bash
+    cd pip_dependency_visualizer
+    ```
+3. Install required Python packages:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ## Configuration
 
@@ -45,8 +53,7 @@ Run the script:
 python .\src\dependency_visualizer.py
 ```
 
-This will generate a `dependency_graph.puml` file and then attempt to visualize it using the specified PlantUML jar. The resulting image will be saved in the same directory as the `.puml` file.  The default output image format is typically PNG.
-
+This will generate a `dependency_graph.puml` file and then attempt to visualize it using the specified PlantUML jar. The resulting image will be saved in the same directory as the `.puml` file. The default output image format is typically PNG.
 
 ## Example
 
@@ -58,5 +65,3 @@ visualizer_path = ".\\plantuml-1.2024.7.jar"
 package_name = "requests"
 repository_url = "https://github.com/psf/requests"
 ```
-
-Then run the script as described above.

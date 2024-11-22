@@ -2,9 +2,6 @@
 dependency_graph.puml
 dependency_graph.png
 
-# Plantum
-plantuml-1.2024.7.jar
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,4 +1,4 @@
-import tomllib
+import toml
 import subprocess
 from typing import Dict, List
 
@@ -6,12 +6,12 @@ from typing import Dict, List
 def parse_toml_config(config_path: str) -> Dict[str, str]:
     """Parses a TOML configuration file."""
     try:
-        with open(config_path, "rb") as f:
-            config = tomllib.load(f)["config"]
+        with open(config_path, "r", encoding="utf-8") as f:
+            config = toml.load(f)["config"]
         return config
     except FileNotFoundError as ex:
         print(f"Config file not found: {ex}")
-    except tomllib.TOMLDecodeError as ex:
+    except toml.TomlDecodeError as ex:
         print(f"Error decoding TOML file: {ex}")
     return {}
 
